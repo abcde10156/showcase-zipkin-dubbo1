@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+
+    <!-- 声明需要暴露的服务接口 start-->
+    <!-- 预习复习 入库 以及相关查询接口 -->
+    <dubbo:service interface="com.xdf.showcase.api.KsuService" version="1.0.0"
+                   timeout="5000" ref="ksuService" validation="true"/>
+
+</beans>

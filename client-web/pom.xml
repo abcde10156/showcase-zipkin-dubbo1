@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>showcase-zipkin-dubbo</artifactId>
+        <groupId>com.luotao.showcase</groupId>
+        <version>1.0</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>client-web</artifactId>
+    <version>1.0.0</version>
+    <packaging>war</packaging>
+
+
+    <dependencies>
+        <dependency>
+            <groupId>com.luotao.showcase</groupId>
+            <artifactId>api-common</artifactId>
+            <version>1.0-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-webapp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-jsp</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <!-- https://mvnrepository.com/artifact/io.zipkin.brave/brave-context-slf4j -->
+
+    </dependencies>
+</project>

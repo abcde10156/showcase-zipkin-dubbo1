@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo" xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.0.xsd
+
+        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-4.0.xsd http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!--<context:property-placeholder location="classpath:*.properties" />-->
+    <context:component-scan base-package="com.luotao.showcase.svr"/>
+
+    <aop:aspectj-autoproxy/>
+
+    <!-- dubbo监控，切勿删除 -->
+    <!--<dubbo:monitor protocol="registry"/>-->
+
+    <!-- 提供方应用信息，用于计算依赖关系 -->
+    <dubbo:application name="ksu-svr"/>
+
+    <!-- 使用multicast广播注册中心暴露服务地址 -->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181" check="false"/>
+    <!-- 用dubbo协议在20880端口暴露服务 -->
+    <dubbo:protocol name="dubbo" port="28002"/>
+
+    <dubbo:provider retries="0" filter="tracingFilter"/>
+    <!--<dubbo:consumer retries="0" filter="tracingFilter"/> -->
+    <!--<dubbo:provider retries="0" />-->
+    <dubbo:consumer retries="0" filter="tracingFilter"/>
+
+
+    <!--<bean id="sender" class="zipkin2.reporter.beans.OkHttpSenderFactoryBean">-->
+    <!--<property name="endpoint" value="http://localhost:9411/api/v2/spans"/>-->
+    <!--</bean>-->
+    <bean id="sender" class="zipkin2.reporter.beans.KafkaSenderFactoryBean">
+        <!--<property name="endpoint" value="http://localhost:9411/api/v2/spans"/>-->
+        <property name="bootstrapServers" value="localhost:9092"/>
+        <property name="topic" value="zipkin"/>
+    </bean>
+    <!--<bean id="sender" class="zipkin2.reporter.beans.RabbitMQSenderFactoryBean">-->
+    <!--&lt;!&ndash;<property name="endpoint" value="http://localhost:9411/api/v2/spans"/>&ndash;&gt;-->
+    <!--<property name="addresses" value="127.0.0.1:5672"/>-->
+    <!--<property name="username" value="guest"/>-->
+    <!--<property name="password" value="guest"/>-->
+    <!--<property name="queue" value="zipkin"/>-->
+    <!--<property name="connectionTimeout" value="60000"/>-->
+    <!--<property name="virtualHost" value="/"/>-->
+    <!--</bean>-->
+
+    <bean id="tracing" class="brave.spring.beans.TracingFactoryBean">
+        <property name="localServiceName" value="brave-webmvc-example"/>
+        <property name="spanReporter">
+            <bean class="zipkin2.reporter.beans.AsyncReporterFactoryBean">
+                <property name="sender" ref="sender"/>
+                <!-- wait up to half a second for any in-flight spans on close -->
+                <property name="closeTimeout" value="500"/>
+            </bean>
+        </property>
+        <property name="currentTraceContext">
+            <bean class="brave.context.slf4j.MDCCurrentTraceContext" factory-method="create"/>
+        </property>
+    </bean>
+
+    <bean id="httpTracing" class="brave.spring.beans.HttpTracingFactoryBean">
+        <property name="tracing" ref="tracing"/>
+    </bean>
+
+    <import resource="applicationContext-ksu-provider.xml"/>
+    <import resource="applicationContext-consumer-baseuser.xml"/>
+
+</beans>

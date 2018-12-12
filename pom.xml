@@ -9,10 +9,10 @@
     <packaging>pom</packaging>
     <version>1.0</version>
     <modules>
-        <!--<module>api-common</module>-->
-        <!--<module>dubbo-user-base</module>-->
-        <!--<module>dubbo-ksu-svr</module>-->
-        <!--<module>client-web</module>-->
+        <module>api-common</module>
+        <module>dubbo-user-base</module>
+        <module>dubbo-ksu-svr</module>
+        <module>client-web</module>
     </modules>
     <properties>
         <spring.version>4.2.3.RELEASE</spring.version>

@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:dubbo="http://code.alibabatech.com/schema/dubbo"
+       xmlns="http://www.springframework.org/schema/beans"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://code.alibabatech.com/schema/dubbo http://code.alibabatech.com/schema/dubbo/dubbo.xsd">
+
+    <!-- dubbo监控，切勿删除 -->
+    <!--<dubbo:monitor protocol="registry"/>-->
+
+    <!-- 提供方应用信息，用于计算依赖关系 -->
+    <dubbo:application name="base-user-svr"/>
+
+    <!-- 使用multicast广播注册中心暴露服务地址 -->
+    <dubbo:registry address="zookeeper://127.0.0.1:2181" check="false"/>
+
+    <!-- 用dubbo协议在20880端口暴露服务 -->
+    <dubbo:protocol name="dubbo" port="28001"/>
+
+    <dubbo:provider retries="0" filter="tracingFilter"/>
+    <!--<dubbo:consumer retries="0" filter="tracingFilter"/> -->
+    <!--<dubbo:provider retries="0" />-->
+    <dubbo:consumer retries="0" filter="tracingFilter"/>
+
+    <!-- 声明需要暴露的服务接口 start-->
+    <!-- 预习复习 入库 以及相关查询接口 -->
+    <dubbo:service interface="com.xdf.showcase.api.UserService" version="1.0.0"
+                   timeout="5000" ref="userService" validation="true"/>
+
+</beans>
